@@ -1,9 +1,10 @@
+using System.Data;
 using CodeFirst.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeFirst.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/patient")]
 [ApiController]
 public class PatientController : ControllerBase
 {
@@ -17,10 +18,12 @@ public class PatientController : ControllerBase
     [HttpGet("{idPatient:int}")]
     public async Task<IActionResult> GetFullInfoOfPatient(int idPatient)
     {
+        
+        
         var patient = await _patientService.GetFullPatientInfo(idPatient);
         if (patient == null)
         {
-            return NoContent();
+            throw new DataException("Patient does not exist");
         }
 
         return Ok(patient);

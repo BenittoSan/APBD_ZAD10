@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeFirst.Migrations
 {
     [DbContext(typeof(Apbd9Context))]
-    [Migration("20240609172536_AddedPrescriptionMedicamentTable")]
-    partial class AddedPrescriptionMedicamentTable
+    [Migration("20240611144153_TestMigration")]
+    partial class TestMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,32 @@ namespace CodeFirst.Migrations
                     b.HasIndex("MedicamentIdMedicament");
 
                     b.ToTable("PrescriptionMedicaments");
+                });
+
+            modelBuilder.Entity("CodeFirst.Models.User", b =>
+                {
+                    b.Property<int>("IdUser")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdUser");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CodeFirst.Models.Prescription", b =>

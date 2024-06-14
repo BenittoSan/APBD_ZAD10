@@ -1,3 +1,4 @@
+using System.Data;
 using CodeFirst.DTOs.Request;
 using CodeFirst.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ public class PrescriptionController : ControllerBase
 
         if (prescription == null)
         {
-            return BadRequest();
+            throw new DataException("Bad Request, prescription does not exist");
         }
 
         return Ok(prescription);

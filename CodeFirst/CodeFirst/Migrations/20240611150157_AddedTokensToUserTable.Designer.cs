@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeFirst.Migrations
 {
     [DbContext(typeof(Apbd9Context))]
-    [Migration("20240609171019_AddedPatientTable")]
-    partial class AddedPatientTable
+    [Migration("20240611150157_AddedTokensToUserTable")]
+    partial class AddedTokensToUserTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,6 +136,76 @@ namespace CodeFirst.Migrations
                     b.ToTable("Prescriptions");
                 });
 
+            modelBuilder.Entity("CodeFirst.Models.PrescriptionMedicament", b =>
+                {
+                    b.Property<int>("IdMedicament")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMedicament"));
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("Dose")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPrescription")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicamentIdMedicament")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdMedicament");
+
+                    b.HasIndex("IdPrescription");
+
+                    b.HasIndex("MedicamentIdMedicament");
+
+                    b.ToTable("PrescriptionMedicaments");
+                });
+
+            modelBuilder.Entity("CodeFirst.Models.User", b =>
+                {
+                    b.Property<int>("IdUser")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUser"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshTokenExp")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdUser");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("CodeFirst.Models.Prescription", b =>
                 {
                     b.HasOne("CodeFirst.Models.Doctor", "Doctor")
@@ -155,14 +225,43 @@ namespace CodeFirst.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("CodeFirst.Models.PrescriptionMedicament", b =>
+                {
+                    b.HasOne("CodeFirst.Models.Prescription", "Prescription")
+                        .WithMany("PrescriptionMedicaments")
+                        .HasForeignKey("IdPrescription")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CodeFirst.Models.Medicament", "Medicament")
+                        .WithMany("PrescriptionMedicaments")
+                        .HasForeignKey("MedicamentIdMedicament")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medicament");
+
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("CodeFirst.Models.Doctor", b =>
                 {
                     b.Navigation("Prescription");
                 });
 
+            modelBuilder.Entity("CodeFirst.Models.Medicament", b =>
+                {
+                    b.Navigation("PrescriptionMedicaments");
+                });
+
             modelBuilder.Entity("CodeFirst.Models.Patient", b =>
                 {
                     b.Navigation("Prescriptions");
+                });
+
+            modelBuilder.Entity("CodeFirst.Models.Prescription", b =>
+                {
+                    b.Navigation("PrescriptionMedicaments");
                 });
 #pragma warning restore 612, 618
         }
